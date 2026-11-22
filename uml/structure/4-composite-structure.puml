@@ -1,0 +1,23 @@
+@startuml
+title Composite structure: Frontend component
+
+component "Frontend" as Frontend {
+  component "loadItems()\n(page-load handler)" as Handler {
+    port " " as DomPort
+  }
+  component "readItems() / seedItems()\n(query; transaction: check, seed)" as Items
+  component "getDb()\n(Firestore instance)" as Db {
+    port " " as FirestorePort
+  }
+
+  Handler --> Items
+  Items --> Db
+}
+
+note right of Db
+  getDb() runs once per page load: one
+  Firestore instance shared by readItems()
+  and seedItems() (app.js:23-37).
+end note
+
+@enduml

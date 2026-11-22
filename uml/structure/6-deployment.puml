@@ -1,0 +1,19 @@
+@startuml
+title Deployment: sample-gcp infrastructure
+
+actor Browser
+
+node "Firebase Hosting\n(Spark plan)" as Hosting {
+  artifact "public/\n(index.html, app.js)" as FrontendArtifact
+  artifact "/__/firebase/init.json\n(Firebase Web Config)" as ConfigArtifact
+}
+
+node "Cloud Firestore\n(firestore.rules: public read,\nseed-only create)" as Firestore {
+  database "(default)\n(Standard edition, Spark quota)" as DefaultDb
+}
+
+Browser --> FrontendArtifact : HTTPS
+FrontendArtifact --> ConfigArtifact : fetch /__/firebase/init.json
+FrontendArtifact --> DefaultDb : Firestore API (WebChannel over HTTPS);\nunauthenticated, gated by\nfirestore.rules
+
+@enduml

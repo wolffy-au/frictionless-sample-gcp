@@ -1,0 +1,16 @@
+@startuml
+title Class: DemoItem (demoItems schema)
+
+class DemoItem <<document>> {
+  +Id: number <<PK>>
+  +Name: string
+  +Category: string
+}
+
+note right of DemoItem
+  Schema is defined inline as SEED_ITEMS
+  in public/app.js (seedItems()) and isSeed() in firestore.rules,
+  not tracked as a separate migration.
+end note
+
+@enduml

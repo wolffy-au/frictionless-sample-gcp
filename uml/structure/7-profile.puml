@@ -1,0 +1,26 @@
+@startuml
+title Profile: GCP free-tier stereotype
+
+class Node <<metaclass>>
+class Artifact <<metaclass>>
+
+class "GcpFreeTier" as GcpFreeTier <<stereotype>> {
+  costTier: "Spark" | "Spark quota (stops when exhausted)"
+  provider: "GCP"
+}
+
+GcpFreeTier --> Node : <<Extension>>
+GcpFreeTier --> Artifact : <<Extension>>
+
+class "Firebase Hosting" as Hosting <<GcpFreeTier>>
+class "(default)" as DefaultDb <<GcpFreeTier>>
+
+note right of Hosting
+  tier: Spark (elements.yaml: node-firebase-hosting)
+end note
+note right of DefaultDb
+  edition: Standard, Spark quota, stops when exhausted
+  (elements.yaml: artifact-firestore-default-db)
+end note
+
+@enduml

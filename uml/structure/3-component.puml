@@ -1,0 +1,20 @@
+@startuml
+title Component: sample-gcp runtime components
+
+package "Firebase Hosting (Spark plan)" {
+  [Frontend\n(public/index.html, app.js)] as Frontend
+}
+[Firebase JS SDK (v13)\n(www.gstatic.com)] as Sdk
+
+database "Cloud Firestore\n((default), Standard edition, Spark quota)" as FirestoreDb
+
+interface "firebase-firestore.js" as SdkIface
+interface "Firestore API\n(WebChannel over HTTPS)" as FirestoreIface
+
+Frontend ..> SdkIface : import
+SdkIface - Sdk
+
+Sdk ..> FirestoreIface : query / transaction
+FirestoreIface - FirestoreDb
+
+@enduml

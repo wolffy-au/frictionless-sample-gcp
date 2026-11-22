@@ -1,0 +1,15 @@
+@startuml
+title Package: sample-gcp repository layout
+
+package "public" as Public {
+}
+[firestore.rules] as Rules
+[main.tf] as MainTf
+[deploy.sh] as Deploy
+
+Public ..> Rules : Firestore query / transaction\n(seed values must match isSeed())
+MainTf ..> Rules : file("firestore.rules")\n(ruleset + release)
+Deploy ..> MainTf : terraform apply
+Deploy ..> Public : firebase deploy --only hosting
+
+@enduml
