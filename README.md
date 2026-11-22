@@ -2,7 +2,8 @@
 
 A minimal, no-cost Google Cloud sample: Firebase Hosting and a Cloud Firestore
 database on the free **Spark** plan, so no billing account is needed. It is the
-GCP counterpart of `frictionless-sample-azure`. On page load the browser reads
+GCP counterpart of
+[frictionless-sample-azure](https://github.com/wolffy-au/frictionless-sample-azure). On page load the browser reads
 the `demoItems` collection directly from Firestore; on the first visit it
 creates the three sample documents if the collection is empty.
 
