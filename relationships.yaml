@@ -1,0 +1,90 @@
+# sample-gcp — model relationships
+#
+# Schema:  type / source / target / label? / props?
+#   type    ArchiMate 3.2 relationship name, case-insensitive
+#   source  element id      target  element id
+
+- type: Assignment
+  source: node-firestore
+  target: artifact-firestore-default-db
+  label: hosts
+
+- type: Realization
+  source: artifact-firestore-default-db
+  target: do-demo-items
+
+- {type: Assignment, source: node-firebase-hosting, target: artifact-firebase-web-config, label: hosts}
+- {type: Assignment, source: node-firestore, target: artifact-firestore-rules, label: hosts}
+
+- {type: Assignment, source: node-firestore, target: int-firestore-api}
+- {type: Assignment, source: node-firebase-hosting, target: int-web-app}
+
+- {type: Assignment, source: node-firestore, target: sys-firestore-engine}
+- {type: Assignment, source: node-firebase-hosting, target: sys-firebase-hosting-service}
+- {type: Serving, source: sys-firebase-hosting-service, target: app-frontend, label: "serves static files"}
+
+# --- Application: frontend process split (uml/structure, uml/behavior) ---
+- {type: Realization, source: node-firebase-hosting, target: app-frontend, label: hosts}
+
+- {type: Assignment, source: app-frontend, target: app-init-demo-data}
+- {type: Assignment, source: app-frontend, target: app-read-demo-items}
+- {type: Triggering, source: app-read-demo-items, target: app-init-demo-data, label: "if empty"}
+- {type: Triggering, source: app-init-demo-data, target: app-read-demo-items, label: "re-read"}
+
+- type: Access
+  source: app-init-demo-data
+  target: do-demo-items
+  label: create/seed
+  props:
+    access_type: Write
+
+- type: Access
+  source: app-read-demo-items
+  target: do-demo-items
+  label: read
+  props:
+    access_type: Read
+
+# --- Business: Visitor viewing the demo items (uml/behavior/8-use-case.puml) ---
+- {type: Assignment, source: biz-visitor, target: biz-view-demo-items}
+- {type: Serving, source: biz-website, target: biz-visitor, label: "provides access for"}
+- {type: Realization, source: app-frontend, target: biz-website}
+- {type: Realization, source: app-read-demo-items, target: biz-view-demo-items}
+- {type: Composition, source: app-frontend, target: int-frontend, label: exposes}
+- {type: Serving, source: int-frontend, target: biz-website, label: provides access for}
+- {type: Realization, source: do-demo-items, target: bo-demo-item, label: realizes}
+- {type: Realization, source: rep-demo-items-table, target: bo-demo-item, label: realizes}
+- type: Access
+  source: biz-view-demo-items
+  target: rep-demo-items-table
+  label: reads
+  props:
+    access_type: Read
+
+- {type: Association, source: comm-internet, target: int-web-app}
+- {type: Association, source: comm-internet, target: int-firestore-api}
+
+- type: Access
+  source: sys-firebase-hosting-service
+  target: artifact-firebase-web-config
+  label: "serves /__/firebase/init.json"
+  props:
+    access_type: Write
+
+- type: Access
+  source: sys-firestore-engine
+  target: artifact-firestore-rules
+  label: "enforces on every request"
+  props:
+    access_type: Read
+
+# --- Technology: client library behind the Frontend, running in the Visitor's browser (public/app.js) ---
+- {type: Serving, source: sys-firebase-js-sdk, target: app-frontend, label: "provides Firestore connectivity"}
+- {type: Association, source: sys-firebase-js-sdk, target: comm-internet}
+
+- type: Access
+  source: sys-firebase-js-sdk
+  target: artifact-firebase-web-config
+  label: "reads projectId / apiKey"
+  props:
+    access_type: Read

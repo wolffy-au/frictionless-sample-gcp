@@ -1,0 +1,181 @@
+# sample-gcp — model elements
+#
+# Standalone ArchiMate model for this directory (FRICTIONLESS_MODEL_DIR points
+# here — see platform/packages/modelling-specification's README and
+# architecture/model/README.md for the schema).
+#
+# Schema:  type / id / name / desc? / props?
+#   type   bare ArchiMate 3.2 concept name (pyArchimate.ArchiType), case-insensitive
+#   id     stable kebab id -> deterministic UUID (never renumber a live id)
+#   props  str->str
+
+# =====================================================================
+# Technology — infrastructure provisioned by main.tf
+# =====================================================================
+- type: Node
+  id: node-firebase-hosting
+  name: Firebase Hosting
+  desc: >-
+    Firebase Hosting site (Spark plan) hosting the public/ frontend and the
+    project's Firebase web config (/__/firebase/init.json).
+  props:
+    tier: "Spark (no billing account)"
+
+- type: Node
+  id: node-firestore
+  name: Cloud Firestore
+  desc: >-
+    Cloud Firestore in the project — hosting the (default) database, its
+    security rules and the Database Engine that executes its queries.
+
+- type: Artifact
+  id: artifact-firestore-default-db
+  name: "(default)"
+  desc: >-
+    Spark-plan Firestore database (Standard edition). Holds demoItems,
+    created and seeded by the Frontend on first visit.
+  props:
+    edition: "Standard (Spark quota, stops when exhausted)"
+
+- type: Artifact
+  id: artifact-firebase-web-config
+  name: Firebase Web Config
+  desc: >-
+    /__/firebase/init.json, served automatically by Firebase Hosting —
+    projectId, apiKey and related settings read by the Frontend at runtime.
+    Identifies the project; not a secret (firestore.rules is the access
+    control).
+
+- type: Artifact
+  id: artifact-firestore-rules
+  name: Firestore Security Rules
+  desc: >-
+    firestore.rules — the only access control, since browsers reach
+    Firestore directly: public reads of demoItems, creates of documents 1-3
+    only with the exact seed values, no updates or deletes, and nothing
+    else.
+
+- type: CommunicationNetwork
+  id: comm-internet
+  name: Internet
+  desc: >-
+    The genuinely open internet: any browser, anywhere, can reach the
+    Hosting site's public HTTPS endpoint and Firestore's public API
+    endpoint (firestore.googleapis.com). This is the Visitor's ingress path
+    and, with no server-side API, also the browser's path to the database;
+    what it may do there is gated by Firestore Security Rules, not by the
+    network.
+
+# =====================================================================
+# Application — the browser app and the data it reads/writes
+# =====================================================================
+- type: ApplicationComponent
+  id: app-frontend
+  name: Frontend
+  desc: >-
+    Static browser app (public/index.html, public/app.js). Loads the demo
+    items on page load and renders the returned DemoItem rows; separately
+    fetches the static /version.json (written by deploy.sh) to show a build
+    version/timestamp in the footer.
+
+- type: ApplicationProcess
+  id: app-init-demo-data
+  name: Initialize Demo Data
+  desc: >-
+    First-use setup: creates the demo item store if it doesn't exist yet and
+    inserts the three seed items if it is empty, guarded so concurrent first
+    loads seed only once.
+  props:
+    implementation: "seedItems(): runTransaction, read demoItems/1-3, create each missing seed document"
+
+- type: ApplicationProcess
+  id: app-read-demo-items
+  name: Read Demo Items
+  desc: Reads all demo items ordered by Id, on every page load.
+  props:
+    implementation: "readItems(): query(demoItems, orderBy(\"Id\"))"
+
+- type: DataObject
+  id: do-demo-items
+  name: DemoItems
+  desc: The stored demo items — created and seeded on first use by Initialize Demo Data (app-init-demo-data).
+  props:
+    storage: "demoItems collection ((default) database)"
+
+- type: TechnologyInterface
+  id: int-firestore-api
+  name: Firestore API Interface
+  desc: >-
+    Interface exposed by Cloud Firestore for external communication —
+    firestore.googleapis.com, which the Firebase JS SDK
+    (sys-firebase-js-sdk) uses from the browser to exchange queries and
+    results.
+  props:
+    auth: "none (unauthenticated browser requests)"
+    access-control: "firestore.rules (public read, seed-only create)"
+    transport: "WebChannel over HTTPS"
+
+- {type: TechnologyInterface, id: int-web-app, name: Web App Interface, desc: Interface exposed by the web hosting node for external communication.}
+
+- type: SystemSoftware
+  id: sys-firestore-engine
+  name: Firestore Database Engine
+  desc: >-
+    Database engine behind Cloud Firestore —
+    executes the queries app-init-demo-data/app-read-demo-items send
+    through the Firestore API Interface, after checking the security rules.
+
+- type: SystemSoftware
+  id: sys-firebase-hosting-service
+  name: Firebase Hosting Service
+  desc: >-
+    Firebase Hosting's own hosting service — serves the Frontend's static
+    files to the browser, and serves the project's web config (Firebase Web
+    Config) at /__/firebase/init.json.
+
+- type: SystemSoftware
+  id: sys-firebase-js-sdk
+  name: "Firebase JS SDK (v13)"
+  desc: >-
+    Firebase JavaScript SDK (firebase-app and firebase-firestore 13.4.0),
+    imported by public/app.js as ES modules from www.gstatic.com — the
+    Firestore client library the Frontend uses from the Visitor's browser
+    (see uml/structure/3-component.puml's "Firestore API" interface).
+
+# =====================================================================
+# Business — the people-facing use of the demo app
+# =====================================================================
+- type: BusinessActor
+  id: biz-visitor
+  name: Visitor
+  desc: End user browsing the deployed web app (8-use-case.puml).
+
+- type: BusinessProcess
+  id: biz-view-demo-items
+  name: View Demo Items
+  desc: >-
+    The Visitor loads the page and sees the demo item list (8-use-case.puml
+    UC1, includes UC2 "Initialize demo data").
+
+- type: BusinessInterface
+  id: biz-website
+  name: Website
+  desc: The public URL/browser channel through which the Visitor reaches the app.
+
+- type: BusinessObject
+  id: bo-demo-item
+  name: Demo Item
+  desc: >-
+    The business concept of an inventory item (Id, Name, Category) the
+    Visitor views — the business-relevant counterpart of the stored demo
+    items (do-demo-items).
+
+- type: Representation
+  id: rep-demo-items-table
+  name: Demo Items Table
+  desc: >-
+    The rendered <table id="items"> in public/index.html, populated by
+    app.js's loadItems() — the perceptible form of Demo Item the Visitor
+    actually reads.
+
+- {type: ApplicationInterface, id: int-frontend, name: Frontend Interface, desc: HTTP interface exposed by the Frontend component for the Visitor to interact with.}

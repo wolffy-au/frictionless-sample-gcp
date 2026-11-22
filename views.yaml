@@ -1,0 +1,162 @@
+# sample-gcp — view scoping. Schema: see architecture/model/views.yaml.
+
+- id: view-sample-gcp-technology
+  name: "Technology"
+  viewpoint: technology
+  diagram: technology/overview
+  include_types:
+    - Location
+    - Node
+    - TechnologyCollaboration
+    - Device
+    - SystemSoftware
+    - TechnologyInterface
+    - CommunicationNetwork
+    - Path
+    - TechnologyProcess
+    - TechnologyFunction
+    - TechnologyInteraction
+    - TechnologyService
+    - TechnologyEvent
+    - Artifact
+
+- id: view-sample-gcp-business
+  name: "Business: sample-gcp Visitor Journey"
+  viewpoint: custom
+  diagram: business/overview
+  include_types:
+    - BusinessActor
+    - BusinessRole
+    - BusinessCollaboration
+    - BusinessInterface
+    - BusinessProcess
+    - BusinessFunction
+    - BusinessInteraction
+    - BusinessEvent
+    - BusinessService
+    - BusinessObject
+    - Representation
+
+- id: view-sample-gcp-process-cooperation
+  name: Business Process Cooperation
+  viewpoint: business_process_cooperation
+  diagram: business/process-cooperation
+  include_types:
+    - BusinessActor
+    - BusinessRole
+    - BusinessCollaboration
+    - Location
+    - BusinessInterface
+    - BusinessProcess
+    - BusinessFunction
+    - BusinessInteraction
+    - BusinessEvent
+    - BusinessService
+    - BusinessObject
+    - Representation
+    - ApplicationComponent
+    - ApplicationCollaboration
+    - ApplicationInterface
+    - ApplicationProcess
+    - ApplicationFunction
+    - ApplicationInteraction
+    - ApplicationEvent
+    - ApplicationService
+    - DataObject
+  no_direction: [Flow, Triggering]
+  max_width: 3800
+
+- id: view-sample-gcp-information-structure
+  name: "Information Structure"
+  # Generic Information Structure viewpoint (ArchiMate 3.2 §14): the
+  # structure of the information used by this app — business objects, how
+  # they are represented, the data objects that realise them, and the
+  # artifacts that persist those. Swept by type, not members, so a newly
+  # added element of any of these types appears here automatically.
+  viewpoint: information_structure
+  diagram: business/information-structure
+  include_types:
+    - BusinessObject
+    - Representation
+    - DataObject
+    - Artifact
+    - Meaning
+  max_width: 3800
+
+- id: view-sample-gcp-everything
+  name: "Everything: sample-gcp"
+  # Deliberately viewpoint: custom — this spans all three layers (Business,
+  # Application, Technology), which no standard viewpoint allows. Swept by
+  # include_types (every element type actually used in this model), not
+  # members, so a newly added element of any of these types appears here
+  # automatically.
+  viewpoint: custom
+  diagram: overview
+  include_types:
+    - BusinessActor
+    - BusinessProcess
+    - BusinessInterface
+    - BusinessObject
+    - Representation
+    - ApplicationComponent
+    - ApplicationInterface
+    - ApplicationProcess
+    - DataObject
+    - Node
+    - SystemSoftware
+    - TechnologyInterface
+    - CommunicationNetwork
+    - Artifact
+  max_width: 3800
+
+- id: view-sample-gcp-application
+  name: "Application Cooperation"
+  viewpoint: application_cooperation
+  diagram: application/cooperation-standard
+  include_types:
+    - Location
+    - ApplicationComponent
+    - ApplicationCollaboration
+    - ApplicationInterface
+    - ApplicationProcess
+    - ApplicationFunction
+    - ApplicationInteraction
+    - ApplicationEvent
+    - ApplicationService
+    - DataObject
+  no_direction: [Flow]
+  max_width: 3800
+
+- id: view-sample-gcp-technology-usage
+  name: "Technology Usage"
+  # Generic Technology Usage viewpoint (ArchiMate 3.2 §14): the demand
+  # side — how app-frontend is supported by the Firebase JS SDK, the
+  # Hosting service, the Firestore engine and the underlying
+  # Nodes/Interfaces/Artifacts. DataObject is in the spec's element table
+  # but not in the vendored Archi allow-list (archi-viewpoints.xml), which
+  # the build enforces, so it is omitted here too (matches the root
+  # model's view-technology-usage).
+  viewpoint: technology_usage
+  diagram: technology/usage
+  include_types:
+    - ApplicationComponent
+    - ApplicationCollaboration
+    - ApplicationProcess
+    - ApplicationFunction
+    - ApplicationInteraction
+    - ApplicationEvent
+    - Node
+    - Device
+    - TechnologyCollaboration
+    - SystemSoftware
+    - TechnologyInterface
+    - CommunicationNetwork
+    - Path
+    - TechnologyProcess
+    - TechnologyFunction
+    - TechnologyInteraction
+    - TechnologyService
+    - TechnologyEvent
+    - Artifact
+  no_direction: [Flow]
+  max_width: 3800
