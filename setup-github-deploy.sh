@@ -8,6 +8,11 @@
 # repository's "production" environment.
 #
 # Requires gcloud and gh, both signed in. Safe to re-run.
+#
+# Unlike setup-azure-deploy.sh, this script does not export MSYS_NO_PATHCONV=1:
+# none of its arguments start with "/", and gcloud's own Git Bash wrapper execs
+# python with an absolute "/c/..." path that needs Git Bash's path conversion
+# to resolve; forcing it off breaks gcloud itself on Windows.
 set -euo pipefail
 
 cd "$(dirname "$0")"
