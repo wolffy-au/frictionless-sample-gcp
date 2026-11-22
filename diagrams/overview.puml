@@ -18,6 +18,9 @@ Technology_Node(e_id05e3b325cf7f50, "Cloud Firestore") {
 Technology_Node(e_id9f19149e10f45e, "Visitor's Browser") {
   Technology_SystemSoftware(e_id7844884d61f95e, "Firebase JS SDK (v13)")
 }
+Technology_Node(e_ida99faef2fc575a, "Google CDN") {
+  Technology_Artifact(e_ide4daf349c96354, "Firebase JS SDK Modules")
+}
 Technology_CommunicationNetwork(e_id454e7b903b8357, "Internet")
 Application_Component(e_id859316e8097157, "Frontend") {
   Application_Process(e_id9e4601a2031c58, "Initialize Demo Data")
@@ -55,5 +58,8 @@ Rel_Serving_Up(e_id33cc192ee35e5b, e_id9f19149e10f45e, "public/ + init.json over
 Rel_Serving_Up(e_id7844884d61f95e, e_id859316e8097157, "provides Firestore connectivity")
 Rel_Serving_Up(e_id26e5c2fbfcd056, e_id7844884d61f95e, "query / transaction")
 Rel_Access_r(e_id7844884d61f95e, e_id114715e81c7e5c, "reads projectId / apiKey")
+Rel_Realization_Up(e_ide4daf349c96354, e_id7844884d61f95e, "")
+Rel_Association(e_id454e7b903b8357, e_ida99faef2fc575a, "")
+Rel_Serving_Up(e_ida99faef2fc575a, e_id9f19149e10f45e, "SDK modules over HTTPS")
 
 @enduml

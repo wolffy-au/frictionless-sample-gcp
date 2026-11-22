@@ -91,3 +91,9 @@
   label: "reads projectId / apiKey"
   props:
     access_type: Read
+
+# --- Technology: Google CDN delivering the SDK to the browser (public/app.js import URLs) ---
+- {type: Assignment, source: node-gstatic-cdn, target: artifact-firebase-js-sdk-modules, label: hosts}
+- {type: Realization, source: artifact-firebase-js-sdk-modules, target: sys-firebase-js-sdk}
+- {type: Association, source: comm-internet, target: node-gstatic-cdn}
+- {type: Serving, source: node-gstatic-cdn, target: node-visitor-browser, label: "SDK modules over HTTPS"}

@@ -31,11 +31,23 @@
         </property>
       </properties>
     </element>
+    <element identifier="id-a99faef2fc575a318d1bf08fe4b20573" xsi:type="Node">
+      <name>Google CDN</name>
+      <documentation>Google's public static-content CDN (www.gstatic.com), outside this project â€” serves the Firebase JS SDK modules public/app.js imports on every page load. A runtime dependency: if it is unreachable, the page loads but cannot read any demo items.</documentation>
+      <properties>
+        <property propertyDefinitionRef="propid-3">
+          <value>www.gstatic.com</value>
+        </property>
+        <property propertyDefinitionRef="propid-2">
+          <value>platform</value>
+        </property>
+      </properties>
+    </element>
     <element identifier="id-b070feee4bdb5ee39c1be2442a133326" xsi:type="Artifact">
       <name>(default)</name>
       <documentation>Spark-plan Firestore database (Standard edition). Holds demoItems, created and seeded by the Frontend on first visit.</documentation>
       <properties>
-        <property propertyDefinitionRef="propid-3">
+        <property propertyDefinitionRef="propid-4">
           <value>Standard (Spark quota, stops when exhausted)</value>
         </property>
         <property propertyDefinitionRef="propid-2">
@@ -56,6 +68,18 @@
       <name>Firestore Security Rules</name>
       <documentation>firestore.rules â€” the only access control, since browsers reach Firestore directly: public reads of demoItems, creates of documents 1-3 only with the exact seed values, no updates or deletes, and nothing else.</documentation>
       <properties>
+        <property propertyDefinitionRef="propid-2">
+          <value>platform</value>
+        </property>
+      </properties>
+    </element>
+    <element identifier="id-e4daf349c9635469bc2fb98c5fc2c1b9" xsi:type="Artifact">
+      <name>Firebase JS SDK Modules</name>
+      <documentation>firebasejs/13.4.0/firebase-app.js and firebase-firestore.js â€” the ES module files public/app.js imports by URL, pinned to 13.4.0. Not bundled into public/, so the version is fixed by the import URLs alone.</documentation>
+      <properties>
+        <property propertyDefinitionRef="propid-5">
+          <value>13.4.0</value>
+        </property>
         <property propertyDefinitionRef="propid-2">
           <value>platform</value>
         </property>
@@ -83,7 +107,7 @@
       <name>Initialize Demo Data</name>
       <documentation>First-use setup: creates the demo item store if it doesn't exist yet and inserts the three seed items if it is empty, guarded so concurrent first loads seed only once.</documentation>
       <properties>
-        <property propertyDefinitionRef="propid-4">
+        <property propertyDefinitionRef="propid-6">
           <value>seedItems(): runTransaction, read demoItems/1-3, create each missing seed document</value>
         </property>
         <property propertyDefinitionRef="propid-2">
@@ -95,7 +119,7 @@
       <name>Read Demo Items</name>
       <documentation>Reads all demo items ordered by Id, on every page load.</documentation>
       <properties>
-        <property propertyDefinitionRef="propid-4">
+        <property propertyDefinitionRef="propid-6">
           <value>readItems(): query(demoItems, orderBy("Id"))</value>
         </property>
         <property propertyDefinitionRef="propid-2">
@@ -107,7 +131,7 @@
       <name>DemoItems</name>
       <documentation>The stored demo items â€” created and seeded on first use by Initialize Demo Data (app-init-demo-data).</documentation>
       <properties>
-        <property propertyDefinitionRef="propid-5">
+        <property propertyDefinitionRef="propid-7">
           <value>demoItems collection ((default) database)</value>
         </property>
         <property propertyDefinitionRef="propid-2">
@@ -119,13 +143,13 @@
       <name>Firestore API Interface</name>
       <documentation>Interface exposed by Cloud Firestore for external communication â€” firestore.googleapis.com, which the Firebase JS SDK (sys-firebase-js-sdk) uses from the browser to exchange queries and results.</documentation>
       <properties>
-        <property propertyDefinitionRef="propid-6">
+        <property propertyDefinitionRef="propid-8">
           <value>none (unauthenticated browser requests)</value>
         </property>
-        <property propertyDefinitionRef="propid-7">
+        <property propertyDefinitionRef="propid-9">
           <value>firestore.rules (public read, seed-only create)</value>
         </property>
-        <property propertyDefinitionRef="propid-8">
+        <property propertyDefinitionRef="propid-10">
           <value>WebChannel over HTTPS</value>
         </property>
         <property propertyDefinitionRef="propid-2">
@@ -304,6 +328,14 @@
     <relationship identifier="id-a0381dd172525213a783f1865f6d4cb4" source="id-7844884d61f95e98b7a4e46b9cce26e6" target="id-114715e81c7e5c91868b79ad2a6cc902" xsi:type="Access" accessType="Read">
       <name>reads projectId / apiKey</name>
     </relationship>
+    <relationship identifier="id-cd261141b23d5be6a1d72eb77c08ad78" source="id-a99faef2fc575a318d1bf08fe4b20573" target="id-e4daf349c9635469bc2fb98c5fc2c1b9" xsi:type="Assignment">
+      <name>hosts</name>
+    </relationship>
+    <relationship identifier="id-3e6d9dc58a2f563aa143e46f3080969f" source="id-e4daf349c9635469bc2fb98c5fc2c1b9" target="id-7844884d61f95e98b7a4e46b9cce26e6" xsi:type="Realization"/>
+    <relationship identifier="id-d2cbc23472b758d7a983c59b95e89af0" source="id-454e7b903b83570699490736727db0f5" target="id-a99faef2fc575a318d1bf08fe4b20573" xsi:type="Association"/>
+    <relationship identifier="id-170afbdca48152e8bf8b7026b51aba86" source="id-a99faef2fc575a318d1bf08fe4b20573" target="id-9f19149e10f45ed6963d7945c81159bf" xsi:type="Serving">
+      <name>SDK modules over HTTPS</name>
+    </relationship>
   </relationships>
   <organizations>
     <item>
@@ -327,9 +359,11 @@
       <item identifierRef="id-07145ad85465558c97d687466925a737"/>
       <item identifierRef="id-05e3b325cf7f5056a1a8087ed378b960"/>
       <item identifierRef="id-9f19149e10f45ed6963d7945c81159bf"/>
+      <item identifierRef="id-a99faef2fc575a318d1bf08fe4b20573"/>
       <item identifierRef="id-b070feee4bdb5ee39c1be2442a133326"/>
       <item identifierRef="id-114715e81c7e5c91868b79ad2a6cc902"/>
       <item identifierRef="id-b243cba23e035635885b83a0495d243b"/>
+      <item identifierRef="id-e4daf349c9635469bc2fb98c5fc2c1b9"/>
       <item identifierRef="id-454e7b903b83570699490736727db0f5"/>
       <item identifierRef="id-26e5c2fbfcd056cfaabac6515af432b5"/>
       <item identifierRef="id-33cc192ee35e5bb1ac6766d16cace9ee"/>
@@ -346,21 +380,27 @@
       <name>context</name>
     </propertyDefinition>
     <propertyDefinition identifier="propid-3" type="string">
-      <name>edition</name>
+      <name>host</name>
     </propertyDefinition>
     <propertyDefinition identifier="propid-4" type="string">
-      <name>implementation</name>
+      <name>edition</name>
     </propertyDefinition>
     <propertyDefinition identifier="propid-5" type="string">
-      <name>storage</name>
+      <name>version</name>
     </propertyDefinition>
     <propertyDefinition identifier="propid-6" type="string">
-      <name>auth</name>
+      <name>implementation</name>
     </propertyDefinition>
     <propertyDefinition identifier="propid-7" type="string">
-      <name>access-control</name>
+      <name>storage</name>
     </propertyDefinition>
     <propertyDefinition identifier="propid-8" type="string">
+      <name>auth</name>
+    </propertyDefinition>
+    <propertyDefinition identifier="propid-9" type="string">
+      <name>access-control</name>
+    </propertyDefinition>
+    <propertyDefinition identifier="propid-10" type="string">
       <name>transport</name>
     </propertyDefinition>
   </propertyDefinitions>
@@ -389,6 +429,13 @@
             </font>
           </style>
         </node>
+        <node identifier="id-4b336f97fc1c5f51a2f2388ec3a15408" elementRef="id-a99faef2fc575a318d1bf08fe4b20573" xsi:type="Element" x="720" y="0" w="100" h="80">
+          <style>
+            <font name="Arial" size="10">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </node>
         <node identifier="id-33cac5771f0a569f9d780b3f585ba29c" elementRef="id-b070feee4bdb5ee39c1be2442a133326" xsi:type="Element" x="0" y="480" w="100" h="80">
           <style>
             <font name="Arial" size="10">
@@ -410,42 +457,49 @@
             </font>
           </style>
         </node>
-        <node identifier="id-24dbf6aac8065f3592dd88d8b1cdebdc" elementRef="id-454e7b903b83570699490736727db0f5" xsi:type="Element" x="720" y="0" w="100" h="80">
+        <node identifier="id-9acc87e13e4452f3b9084db6c8c2ae08" elementRef="id-e4daf349c9635469bc2fb98c5fc2c1b9" xsi:type="Element" x="720" y="480" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-7598df2509ed51f688cd22cf537a3b02" elementRef="id-26e5c2fbfcd056cfaabac6515af432b5" xsi:type="Element" x="960" y="0" w="100" h="70">
+        <node identifier="id-24dbf6aac8065f3592dd88d8b1cdebdc" elementRef="id-454e7b903b83570699490736727db0f5" xsi:type="Element" x="960" y="0" w="100" h="80">
+          <style>
+            <font name="Arial" size="10">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </node>
+        <node identifier="id-7598df2509ed51f688cd22cf537a3b02" elementRef="id-26e5c2fbfcd056cfaabac6515af432b5" xsi:type="Element" x="1200" y="0" w="100" h="70">
           <style>
             <font name="Arial" size="9">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-4e9bb996c13d559685e5618e982a3f66" elementRef="id-33cc192ee35e5bb1ac6766d16cace9ee" xsi:type="Element" x="1200" y="0" w="100" h="70">
+        <node identifier="id-4e9bb996c13d559685e5618e982a3f66" elementRef="id-33cc192ee35e5bb1ac6766d16cace9ee" xsi:type="Element" x="1440" y="0" w="100" h="70">
           <style>
             <font name="Arial" size="9">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-c4d7407d2cc25ad3835a560af42a83c6" elementRef="id-02ca65d6e6735138a06de291b153f6fd" xsi:type="Element" x="720" y="480" w="100" h="80">
+        <node identifier="id-c4d7407d2cc25ad3835a560af42a83c6" elementRef="id-02ca65d6e6735138a06de291b153f6fd" xsi:type="Element" x="960" y="480" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-341988f089da520d9fcb54a3e2a864fd" elementRef="id-9871766290fc58638a45f906c86c7090" xsi:type="Element" x="960" y="480" w="100" h="80">
+        <node identifier="id-341988f089da520d9fcb54a3e2a864fd" elementRef="id-9871766290fc58638a45f906c86c7090" xsi:type="Element" x="1200" y="480" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-f491e077b4505920b461f5f68684ed8e" elementRef="id-7844884d61f95e98b7a4e46b9cce26e6" xsi:type="Element" x="1200" y="480" w="100" h="80">
+        <node identifier="id-f491e077b4505920b461f5f68684ed8e" elementRef="id-7844884d61f95e98b7a4e46b9cce26e6" xsi:type="Element" x="1440" y="480" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
@@ -558,6 +612,34 @@
           </style>
         </connection>
         <connection identifier="id-0c02a7d31de658d8ad37ac873d0d1fdf" relationshipRef="id-a0381dd172525213a783f1865f6d4cb4" xsi:type="Relationship" source="id-f491e077b4505920b461f5f68684ed8e" target="id-da4bfdfbf669591aa1ad250f5f72c340">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-db756a0b371059bfa9cd4d6556719247" relationshipRef="id-cd261141b23d5be6a1d72eb77c08ad78" xsi:type="Relationship" source="id-4b336f97fc1c5f51a2f2388ec3a15408" target="id-9acc87e13e4452f3b9084db6c8c2ae08">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-0214302156cd5e5f9efbe10233a68268" relationshipRef="id-3e6d9dc58a2f563aa143e46f3080969f" xsi:type="Relationship" source="id-9acc87e13e4452f3b9084db6c8c2ae08" target="id-f491e077b4505920b461f5f68684ed8e">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-94e4d2cb7c55584189b94ccd20f06c57" relationshipRef="id-d2cbc23472b758d7a983c59b95e89af0" xsi:type="Relationship" source="id-24dbf6aac8065f3592dd88d8b1cdebdc" target="id-4b336f97fc1c5f51a2f2388ec3a15408">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-8db5cffd7f6c50b59fdacbc3a090b9c5" relationshipRef="id-170afbdca48152e8bf8b7026b51aba86" xsi:type="Relationship" source="id-4b336f97fc1c5f51a2f2388ec3a15408" target="id-5685794b43ad58afa3bb3f225ef1bddf">
           <style lineWidth="1">
             <font name="Segoe UI" size="9">
               <color r="0" g="0" b="0"/>
@@ -832,6 +914,13 @@
             </font>
           </style>
         </node>
+        <node identifier="id-a32015a662565028903ddef7b7ec1a0c" elementRef="id-e4daf349c9635469bc2fb98c5fc2c1b9" xsi:type="Element" x="720" y="960" w="100" h="80">
+          <style>
+            <font name="Arial" size="10">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </node>
         <node identifier="id-6dc7f80023515abf82a6cd03467d18d7" elementRef="id-032efff5924e5ef3b57593ad5595b7df" xsi:type="Element" x="0" y="480" w="80" h="80">
           <style>
             <font name="Arial" size="10">
@@ -846,7 +935,7 @@
             </font>
           </style>
         </node>
-        <node identifier="id-762d7dc721d35e1d8c7d3cb47027278d" elementRef="id-bd4055139c86568ba89ecceebd162acb" xsi:type="Element" x="720" y="960" w="100" h="80">
+        <node identifier="id-762d7dc721d35e1d8c7d3cb47027278d" elementRef="id-bd4055139c86568ba89ecceebd162acb" xsi:type="Element" x="960" y="960" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
@@ -898,6 +987,13 @@
             </font>
           </style>
         </node>
+        <node identifier="id-6ea4ff0fc83751c880cd2bb62c162d1e" elementRef="id-a99faef2fc575a318d1bf08fe4b20573" xsi:type="Element" x="720" y="960" w="100" h="80">
+          <style>
+            <font name="Arial" size="10">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </node>
         <node identifier="id-1fa0cd5726c1509ca35e6a9e3e9b56bc" elementRef="id-b070feee4bdb5ee39c1be2442a133326" xsi:type="Element" x="0" y="1440" w="100" h="80">
           <style>
             <font name="Arial" size="10">
@@ -919,7 +1015,14 @@
             </font>
           </style>
         </node>
-        <node identifier="id-b69c2b6ecc6f58c3b813b98aafaac3d7" elementRef="id-454e7b903b83570699490736727db0f5" xsi:type="Element" x="720" y="960" w="100" h="80">
+        <node identifier="id-93fa4138b8a557f8b2c3711f25f307fa" elementRef="id-e4daf349c9635469bc2fb98c5fc2c1b9" xsi:type="Element" x="720" y="1440" w="100" h="80">
+          <style>
+            <font name="Arial" size="10">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </node>
+        <node identifier="id-b69c2b6ecc6f58c3b813b98aafaac3d7" elementRef="id-454e7b903b83570699490736727db0f5" xsi:type="Element" x="960" y="960" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
@@ -954,35 +1057,35 @@
             </font>
           </style>
         </node>
-        <node identifier="id-4782d60abe665deea04956864090ddd4" elementRef="id-26e5c2fbfcd056cfaabac6515af432b5" xsi:type="Element" x="960" y="960" w="100" h="70">
+        <node identifier="id-4782d60abe665deea04956864090ddd4" elementRef="id-26e5c2fbfcd056cfaabac6515af432b5" xsi:type="Element" x="1200" y="960" w="100" h="70">
           <style>
             <font name="Arial" size="9">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-3694a62ffc8b59d188b50032ce931317" elementRef="id-33cc192ee35e5bb1ac6766d16cace9ee" xsi:type="Element" x="1200" y="960" w="100" h="70">
+        <node identifier="id-3694a62ffc8b59d188b50032ce931317" elementRef="id-33cc192ee35e5bb1ac6766d16cace9ee" xsi:type="Element" x="1440" y="960" w="100" h="70">
           <style>
             <font name="Arial" size="9">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-3b689560d74d50489f068cbf0769c22a" elementRef="id-02ca65d6e6735138a06de291b153f6fd" xsi:type="Element" x="720" y="1440" w="100" h="80">
+        <node identifier="id-3b689560d74d50489f068cbf0769c22a" elementRef="id-02ca65d6e6735138a06de291b153f6fd" xsi:type="Element" x="960" y="1440" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-8de7deb0823055b8833a550d6cbca987" elementRef="id-9871766290fc58638a45f906c86c7090" xsi:type="Element" x="960" y="1440" w="100" h="80">
+        <node identifier="id-8de7deb0823055b8833a550d6cbca987" elementRef="id-9871766290fc58638a45f906c86c7090" xsi:type="Element" x="1200" y="1440" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-542e1ffa6ec8511b8caca287d8822867" elementRef="id-7844884d61f95e98b7a4e46b9cce26e6" xsi:type="Element" x="1200" y="1440" w="100" h="80">
+        <node identifier="id-542e1ffa6ec8511b8caca287d8822867" elementRef="id-7844884d61f95e98b7a4e46b9cce26e6" xsi:type="Element" x="1680" y="1440" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
@@ -1017,7 +1120,7 @@
             </font>
           </style>
         </node>
-        <node identifier="id-3f905d84bd7050a5ad3d586b882b97fd" elementRef="id-bd4055139c86568ba89ecceebd162acb" xsi:type="Element" x="1440" y="1440" w="100" h="80">
+        <node identifier="id-3f905d84bd7050a5ad3d586b882b97fd" elementRef="id-bd4055139c86568ba89ecceebd162acb" xsi:type="Element" x="0" y="1680" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
@@ -1276,6 +1379,34 @@
             </font>
           </style>
         </connection>
+        <connection identifier="id-d6610a2544b659b19f2f5eb63c1764a2" relationshipRef="id-cd261141b23d5be6a1d72eb77c08ad78" xsi:type="Relationship" source="id-6ea4ff0fc83751c880cd2bb62c162d1e" target="id-93fa4138b8a557f8b2c3711f25f307fa">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-6afea3ab9f1850858c331e7ab989d203" relationshipRef="id-3e6d9dc58a2f563aa143e46f3080969f" xsi:type="Relationship" source="id-93fa4138b8a557f8b2c3711f25f307fa" target="id-542e1ffa6ec8511b8caca287d8822867">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-327bc1f026955eff84cf5bb4ad4b07e7" relationshipRef="id-d2cbc23472b758d7a983c59b95e89af0" xsi:type="Relationship" source="id-b69c2b6ecc6f58c3b813b98aafaac3d7" target="id-6ea4ff0fc83751c880cd2bb62c162d1e">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-eb54dc9fe4da5db5a9ee48697d789ede" relationshipRef="id-170afbdca48152e8bf8b7026b51aba86" xsi:type="Relationship" source="id-6ea4ff0fc83751c880cd2bb62c162d1e" target="id-3362fa9b269955c7b24196846238b277">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
       </view>
       <view identifier="id-e7568344e4d85a8ba69a2e04e6ffc56e" xsi:type="Diagram">
         <name>Application Cooperation</name>
@@ -1387,6 +1518,13 @@
             </font>
           </style>
         </node>
+        <node identifier="id-698e22d8455d5753996cc23c8805ab6e" elementRef="id-a99faef2fc575a318d1bf08fe4b20573" xsi:type="Element" x="720" y="480" w="100" h="80">
+          <style>
+            <font name="Arial" size="10">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </node>
         <node identifier="id-1401a4ef662f5e099d9fb8ca0e0398cd" elementRef="id-b070feee4bdb5ee39c1be2442a133326" xsi:type="Element" x="0" y="960" w="100" h="80">
           <style>
             <font name="Arial" size="10">
@@ -1408,7 +1546,14 @@
             </font>
           </style>
         </node>
-        <node identifier="id-ccfaf369deda54ada8a2bce8d09efb05" elementRef="id-454e7b903b83570699490736727db0f5" xsi:type="Element" x="720" y="480" w="100" h="80">
+        <node identifier="id-1adf8e45e9ff5c99a3b89d1283b4df28" elementRef="id-e4daf349c9635469bc2fb98c5fc2c1b9" xsi:type="Element" x="720" y="960" w="100" h="80">
+          <style>
+            <font name="Arial" size="10">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </node>
+        <node identifier="id-ccfaf369deda54ada8a2bce8d09efb05" elementRef="id-454e7b903b83570699490736727db0f5" xsi:type="Element" x="960" y="480" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
@@ -1436,35 +1581,35 @@
             </font>
           </style>
         </node>
-        <node identifier="id-851908a1844c50af819f0506f1ae53a9" elementRef="id-26e5c2fbfcd056cfaabac6515af432b5" xsi:type="Element" x="960" y="480" w="100" h="70">
+        <node identifier="id-851908a1844c50af819f0506f1ae53a9" elementRef="id-26e5c2fbfcd056cfaabac6515af432b5" xsi:type="Element" x="1200" y="480" w="100" h="70">
           <style>
             <font name="Arial" size="9">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-8c6707f08d8b5544bf7591fa4b7d6840" elementRef="id-33cc192ee35e5bb1ac6766d16cace9ee" xsi:type="Element" x="1200" y="480" w="100" h="70">
+        <node identifier="id-8c6707f08d8b5544bf7591fa4b7d6840" elementRef="id-33cc192ee35e5bb1ac6766d16cace9ee" xsi:type="Element" x="1440" y="480" w="100" h="70">
           <style>
             <font name="Arial" size="9">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-60f85706227757049890bb3a44ebff8a" elementRef="id-02ca65d6e6735138a06de291b153f6fd" xsi:type="Element" x="720" y="960" w="100" h="80">
+        <node identifier="id-60f85706227757049890bb3a44ebff8a" elementRef="id-02ca65d6e6735138a06de291b153f6fd" xsi:type="Element" x="960" y="960" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-14202960067b5dbbadff373bb551cbe4" elementRef="id-9871766290fc58638a45f906c86c7090" xsi:type="Element" x="960" y="960" w="100" h="80">
+        <node identifier="id-14202960067b5dbbadff373bb551cbe4" elementRef="id-9871766290fc58638a45f906c86c7090" xsi:type="Element" x="1200" y="960" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
             </font>
           </style>
         </node>
-        <node identifier="id-0f7fc0e412c556f4a6ddc356fb7e5cb6" elementRef="id-7844884d61f95e98b7a4e46b9cce26e6" xsi:type="Element" x="1200" y="960" w="100" h="80">
+        <node identifier="id-0f7fc0e412c556f4a6ddc356fb7e5cb6" elementRef="id-7844884d61f95e98b7a4e46b9cce26e6" xsi:type="Element" x="1680" y="960" w="100" h="80">
           <style>
             <font name="Arial" size="10">
               <color r="0" g="0" b="0"/>
@@ -1626,6 +1771,34 @@
           </style>
         </connection>
         <connection identifier="id-6740ee20bf8955f2abbe37dd110889a2" relationshipRef="id-a0381dd172525213a783f1865f6d4cb4" xsi:type="Relationship" source="id-0f7fc0e412c556f4a6ddc356fb7e5cb6" target="id-d160888e964951bf825ec30db22de717">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-c92481fa2683567ea4fc5dd76646d722" relationshipRef="id-cd261141b23d5be6a1d72eb77c08ad78" xsi:type="Relationship" source="id-698e22d8455d5753996cc23c8805ab6e" target="id-1adf8e45e9ff5c99a3b89d1283b4df28">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-e3cabd9743015352bae3f71f7ef5a913" relationshipRef="id-3e6d9dc58a2f563aa143e46f3080969f" xsi:type="Relationship" source="id-1adf8e45e9ff5c99a3b89d1283b4df28" target="id-0f7fc0e412c556f4a6ddc356fb7e5cb6">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-43b160a53b0e598a80fc32b23e8e32a6" relationshipRef="id-d2cbc23472b758d7a983c59b95e89af0" xsi:type="Relationship" source="id-ccfaf369deda54ada8a2bce8d09efb05" target="id-698e22d8455d5753996cc23c8805ab6e">
+          <style lineWidth="1">
+            <font name="Segoe UI" size="9">
+              <color r="0" g="0" b="0"/>
+            </font>
+          </style>
+        </connection>
+        <connection identifier="id-24cb264b8ab65c86ac9c7f292ff2f51e" relationshipRef="id-170afbdca48152e8bf8b7026b51aba86" xsi:type="Relationship" source="id-698e22d8455d5753996cc23c8805ab6e" target="id-d63793b4f05b58869834d9b1420a4cec">
           <style lineWidth="1">
             <font name="Segoe UI" size="9">
               <color r="0" g="0" b="0"/>

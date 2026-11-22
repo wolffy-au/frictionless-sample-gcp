@@ -7,6 +7,7 @@ title Information Structure
 Technology_Artifact(e_idb070feee4bdb5e, "(default)")
 Technology_Artifact(e_id114715e81c7e5c, "Firebase Web Config")
 Technology_Artifact(e_idb243cba23e0356, "Firestore Security Rules")
+Technology_Artifact(e_ide4daf349c96354, "Firebase JS SDK Modules")
 Application_DataObject(e_id032efff5924e5e, "DemoItems")
 Business_Object(e_id32456a57134d5f, "Demo Item")
 Business_Representation(e_idbd4055139c8656, "Demo Items Table")

@@ -37,6 +37,17 @@
     where every Firestore call originates. An untrusted client: what it may
     do is decided by Firestore Security Rules, not by this node.
 
+- type: Node
+  id: node-gstatic-cdn
+  name: Google CDN
+  desc: >-
+    Google's public static-content CDN (www.gstatic.com), outside this
+    project — serves the Firebase JS SDK modules public/app.js imports on
+    every page load. A runtime dependency: if it is unreachable, the page
+    loads but cannot read any demo items.
+  props:
+    host: www.gstatic.com
+
 - type: Artifact
   id: artifact-firestore-default-db
   name: "(default)"
@@ -63,6 +74,16 @@
     Firestore directly: public reads of demoItems, creates of documents 1-3
     only with the exact seed values, no updates or deletes, and nothing
     else.
+
+- type: Artifact
+  id: artifact-firebase-js-sdk-modules
+  name: Firebase JS SDK Modules
+  desc: >-
+    firebasejs/13.4.0/firebase-app.js and firebase-firestore.js — the ES
+    module files public/app.js imports by URL, pinned to 13.4.0. Not
+    bundled into public/, so the version is fixed by the import URLs alone.
+  props:
+    version: "13.4.0"
 
 - type: CommunicationNetwork
   id: comm-internet
