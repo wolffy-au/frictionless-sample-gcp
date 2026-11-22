@@ -1,0 +1,17 @@
+@startuml
+title Communication: page load (message flow)
+
+object "Browser\n(app.js: loadItems())" as Browser
+object "getDb()" as GetDb
+object "Firebase Hosting\n(/__/firebase/init.json)" as Hosting
+object "readItems() /\nseedItems()" as Items
+object "Cloud Firestore\n((default))" as Firestore
+
+Browser --> GetDb : 1: getDb()
+GetDb --> Hosting : 1.1: fetch init.json
+Browser --> Items : 2: readItems(db)
+Items --> Firestore : 2.1: query(demoItems, orderBy("Id"))
+Items --> Firestore : 2.2: runTransaction(seed missing)\n[collection empty]
+Items --> Browser : 3: DemoItem[] rendered\n(or error status, app.js:79-82)
+
+@enduml

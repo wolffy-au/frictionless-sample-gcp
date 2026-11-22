@@ -1,0 +1,19 @@
+@startuml
+title Interaction overview: page load request handling
+
+start
+:ref: Browser runs loadItems() on page load\n(see 11-sequence.puml);
+:ref: Initialize the Firestore client\n(getDb() -> fetch init.json, initializeApp());
+if (Collection empty?\n(first visit)) then (yes)
+  :ref: Seed demo documents\n(see 9-activity.puml: transaction, seed, re-query);
+else (no)
+endif
+if (Exception thrown?) then (yes)
+  :ref: Show error status\n(console.error + status message);
+  stop
+else (no)
+  :ref: Render rows\n(DemoItem[] into #items);
+  stop
+endif
+
+@enduml

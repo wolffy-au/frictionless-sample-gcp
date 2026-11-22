@@ -1,0 +1,47 @@
+@startuml
+title Sequence: page load (loadItems())
+
+actor Browser as Browser
+participant "loadItems()" as Handler
+participant "readItems() /\nseedItems()" as Items
+participant "getDb()" as GetDb
+database "Cloud Firestore\n((default))" as Firestore
+
+Browser -> Handler : load page (app.js)
+activate Handler
+
+Handler -> GetDb : await getDb()
+activate GetDb
+GetDb -> GetDb : fetch /__/firebase/init.json,\ninitializeApp(), getFirestore()
+GetDb --> Handler : db
+deactivate GetDb
+
+Handler -> Items : await readItems(db)
+activate Items
+
+Items -> Firestore : getDocs(query(demoItems, orderBy("Id")))
+activate Firestore
+
+alt collection empty (first visit)
+  Handler -> Items : await seedItems(db)
+  Items -> Firestore : runTransaction(\n  get demoItems/1-3, set each missing seed)
+  Items -> Firestore : getDocs(query(...)) again
+else collection already seeded
+  Items -> Items : use first result
+end
+
+alt reads/seed succeed
+  Firestore --> Items : documents (DemoItem[])
+  Items --> Handler : DemoItem[]
+  Handler --> Browser : render rows,\n"3 rows loaded from Cloud Firestore."
+else exception thrown
+  Firestore --> Items : throw (permission-denied / quota / network)
+  Items --> Handler : rejected promise
+  Handler -> Handler : console.error(\n  "Unable to load demo items from Firestore.")
+  Handler --> Browser : status: "Unable to load demo items.\nCheck the browser console for details."
+end
+deactivate Firestore
+deactivate Items
+deactivate Handler
+
+@enduml

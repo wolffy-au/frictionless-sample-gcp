@@ -1,0 +1,38 @@
+@startuml
+title Timing: demo-data seeding across visits
+
+robust "demoItems\n(collection)" as Collection
+robust "Page Handler\n(loadItems)" as Handler
+
+Collection has Empty,Seeding,Seeded
+Handler has Idle,Handling,Responded
+
+@0
+Collection is Empty
+Handler is Idle
+
+@10
+Handler is Handling
+Collection is Seeding
+Handler -> Handler : Visit 1 (first):\nseedItems() creates demo documents
+
+@60
+Collection is Seeded
+
+@70
+Handler is Responded
+
+@100
+Handler is Idle
+
+@120
+Handler is Handling
+Handler -> Handler : Visit 2 (later):\ndemoItems already seeded
+
+@125
+Handler is Responded
+
+@150
+Handler is Idle
+
+@enduml
