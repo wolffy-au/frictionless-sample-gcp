@@ -29,7 +29,17 @@ fi
 
 REPO=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
 ENVIRONMENT=production
-SUBJECT="repo:$REPO:environment:$ENVIRONMENT"
+# The subject GitHub puts in this repository's OIDC tokens. Ask GitHub for its
+# prefix rather than assume repo:<owner>/<repo>: repositories can use the
+# immutable form repo:<owner>@<owner-id>/<repo>@<repo-id>.
+IFS=$'\t' read -r USE_DEFAULT_SUBJECT SUBJECT_PREFIX < <(
+  gh api "repos/$REPO/actions/oidc/customization/sub" \
+    --jq '[.use_default, (.sub_claim_prefix // "")] | @tsv')
+if [[ "$USE_DEFAULT_SUBJECT" != "true" ]]; then
+  echo "$REPO uses a customized OIDC subject claim, which this script does not support." >&2
+  exit 1
+fi
+SUBJECT="${SUBJECT_PREFIX:-repo:$REPO}:environment:$ENVIRONMENT"
 
 POOL=github
 PROVIDER=github
@@ -55,6 +65,10 @@ if ! gcloud iam workload-identity-pools providers describe "$PROVIDER" \
     --display-name "GitHub Actions" \
     --issuer-uri "https://token.actions.githubusercontent.com" \
     --attribute-mapping "google.subject=assertion.sub,attribute.repository=assertion.repository" \
+    --attribute-condition "assertion.sub == '$SUBJECT'"
+else
+  gcloud iam workload-identity-pools providers update-oidc "$PROVIDER" \
+    --project "$PROJECT_ID" --location global --workload-identity-pool "$POOL" \
     --attribute-condition "assertion.sub == '$SUBJECT'"
 fi
 
