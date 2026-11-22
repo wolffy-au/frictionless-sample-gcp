@@ -67,7 +67,7 @@
 - type: Access
   source: sys-firebase-hosting-service
   target: artifact-firebase-web-config
-  label: "serves /__/firebase/init.json"
+  label: "provisions /__/firebase/init.json"
   props:
     access_type: Write
 

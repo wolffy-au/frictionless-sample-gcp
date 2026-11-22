@@ -273,8 +273,8 @@
     </relationship>
     <relationship identifier="id-8f9df4896249567e91122c88fff2b1ef" source="id-454e7b903b83570699490736727db0f5" target="id-33cc192ee35e5bb1ac6766d16cace9ee" xsi:type="Association"/>
     <relationship identifier="id-604a2565736359548c3ec30d13f1a4b8" source="id-454e7b903b83570699490736727db0f5" target="id-26e5c2fbfcd056cfaabac6515af432b5" xsi:type="Association"/>
-    <relationship identifier="id-ca998f2e2f0357929c7d16ab1b145d63" source="id-9871766290fc58638a45f906c86c7090" target="id-114715e81c7e5c91868b79ad2a6cc902" xsi:type="Access" accessType="Write">
-      <name>serves /__/firebase/init.json</name>
+    <relationship identifier="id-c4b272d410495c639ab20b0bac7942f1" source="id-9871766290fc58638a45f906c86c7090" target="id-114715e81c7e5c91868b79ad2a6cc902" xsi:type="Access" accessType="Write">
+      <name>provisions /__/firebase/init.json</name>
     </relationship>
     <relationship identifier="id-6957d90082595e29869dcd9dc2600772" source="id-02ca65d6e6735138a06de291b153f6fd" target="id-b243cba23e035635885b83a0495d243b" xsi:type="Access" accessType="Read">
       <name>enforces on every request</name>
@@ -489,7 +489,7 @@
             </font>
           </style>
         </connection>
-        <connection identifier="id-7e0c0c574b95550b8912dbb90b021e48" relationshipRef="id-ca998f2e2f0357929c7d16ab1b145d63" xsi:type="Relationship" source="id-341988f089da520d9fcb54a3e2a864fd" target="id-da4bfdfbf669591aa1ad250f5f72c340">
+        <connection identifier="id-b7d71d7ee30258769522bba3f2aaf075" relationshipRef="id-c4b272d410495c639ab20b0bac7942f1" xsi:type="Relationship" source="id-341988f089da520d9fcb54a3e2a864fd" target="id-da4bfdfbf669591aa1ad250f5f72c340">
           <style lineWidth="1">
             <font name="Segoe UI" size="9">
               <color r="0" g="0" b="0"/>
@@ -1166,7 +1166,7 @@
             </font>
           </style>
         </connection>
-        <connection identifier="id-1e5d94f7b39f55b799843d7330cc5f3f" relationshipRef="id-ca998f2e2f0357929c7d16ab1b145d63" xsi:type="Relationship" source="id-8de7deb0823055b8833a550d6cbca987" target="id-9f89d4552ede5249b06a78796a950dc7">
+        <connection identifier="id-33970af0db015bbb88f221d99a5a5a69" relationshipRef="id-c4b272d410495c639ab20b0bac7942f1" xsi:type="Relationship" source="id-8de7deb0823055b8833a550d6cbca987" target="id-9f89d4552ede5249b06a78796a950dc7">
           <style lineWidth="1">
             <font name="Segoe UI" size="9">
               <color r="0" g="0" b="0"/>
@@ -1494,7 +1494,7 @@
             </font>
           </style>
         </connection>
-        <connection identifier="id-bb480d56c16a5425a1def448d4ffd747" relationshipRef="id-ca998f2e2f0357929c7d16ab1b145d63" xsi:type="Relationship" source="id-14202960067b5dbbadff373bb551cbe4" target="id-d160888e964951bf825ec30db22de717">
+        <connection identifier="id-13620f4e53a65184aba48af8ae88fe54" relationshipRef="id-c4b272d410495c639ab20b0bac7942f1" xsi:type="Relationship" source="id-14202960067b5dbbadff373bb551cbe4" target="id-d160888e964951bf825ec30db22de717">
           <style lineWidth="1">
             <font name="Segoe UI" size="9">
               <color r="0" g="0" b="0"/>
