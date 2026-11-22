@@ -1,0 +1,12 @@
+@startuml
+title State machine: Firestore free-tier database ((default))
+
+[*] --> Active
+
+Active : demoItems serves reads/writes
+Active --> Paused : daily free quota reached\n(Spark plan: no billing account)
+
+Paused : Firestore requests fail\n("Unable to load demo items.\nCheck the browser console for details.")
+Paused --> Active : daily free quota resets
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+title Activity: loadItems() demo-data initialization and read
+
+start
+:Query demoItems ORDER BY Id\n(readItems());
+if (demoItems empty?) then (yes)
+  :Begin runTransaction()\n(SDK retries on contention);
+  :Get demoItems/1, /2, /3\n(tx.get);
+  :Set missing seed documents\n(Notebook/Stationery,\nCoffee mug/Kitchen,\nBackpack/Travel);
+  if (Commit accepted?\n(firestore.rules isSeed())) then (no)
+    :throw FirestoreError\n"permission-denied";
+    stop
+  else (yes)
+  endif
+  :Query demoItems ORDER BY Id again;
+else (no)
+endif
+:Return documents to loadItems();
+stop
+
+@enduml

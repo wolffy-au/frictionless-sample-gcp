@@ -1,0 +1,36 @@
+@startuml
+title Use case: sample-gcp actors and goals
+
+left to right direction
+
+actor Visitor
+actor Operator
+
+rectangle "sample-gcp" {
+  usecase "View demo items" as UC1
+  usecase "Initialize demo data\n(first request only)" as UC2
+  usecase "View build version" as UC3
+  usecase "Deploy infrastructure" as UC4
+  usecase "Provision GCP resources\n(main.tf)" as UC5
+  usecase "Publish app\n(public/)" as UC6
+
+  Visitor --> UC1
+  Visitor --> UC3
+  UC1 .> UC2 : <<include>>
+
+  Operator --> UC4
+  UC4 .> UC5 : <<include>>
+  UC4 .> UC6 : <<include>>
+}
+
+note bottom of UC1
+  public/app.js: loadItems() queries
+  demoItems in Firestore on page load.
+end note
+
+note bottom of UC4
+  README "Deploy": gcloud auth application-default login
+  && npx firebase login && bash deploy.sh
+end note
+
+@enduml
