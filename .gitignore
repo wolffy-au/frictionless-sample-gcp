@@ -1,0 +1,9 @@
+node_modules/
+.env
+.firebase/
+*-debug.log
+public/version.json
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
