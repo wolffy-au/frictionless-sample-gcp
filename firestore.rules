@@ -1,0 +1,28 @@
+rules_version = '2';
+
+// The browser reads Firestore directly (no server-side API), so these rules
+// are the only access control. Anyone may read demoItems; the only write ever
+// allowed is creating documents 1-3 with exactly the seed values, so the first
+// visitor can seed the collection but nobody can change or delete it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Must match SEED_ITEMS in public/app.js.
+    function isSeed(id, data) {
+      let seeds = {
+        '1': {'Id': 1, 'Name': 'Notebook', 'Category': 'Stationery'},
+        '2': {'Id': 2, 'Name': 'Coffee mug', 'Category': 'Kitchen'},
+        '3': {'Id': 3, 'Name': 'Backpack', 'Category': 'Travel'}
+      };
+      return id in seeds && data == seeds[id];
+    }
+
+    match /demoItems/{itemId} {
+      allow read: if true;
+      allow create: if isSeed(itemId, request.resource.data);
+      allow update, delete: if false;
+    }
+
+    // Everything else is denied: no other match block grants access.
+  }
+}
