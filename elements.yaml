@@ -28,6 +28,15 @@
     Cloud Firestore in the project — hosting the (default) database, its
     security rules and the Database Engine that executes its queries.
 
+- type: Node
+  id: node-visitor-browser
+  name: Visitor's Browser
+  desc: >-
+    The Visitor's web browser and the machine it runs on — where the
+    Frontend and the Firebase JS SDK execute and, with no server-side API,
+    where every Firestore call originates. An untrusted client: what it may
+    do is decided by Firestore Security Rules, not by this node.
+
 - type: Artifact
   id: artifact-firestore-default-db
   name: "(default)"

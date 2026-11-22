@@ -78,9 +78,12 @@
   props:
     access_type: Read
 
-# --- Technology: client library behind the Frontend, running in the Visitor's browser (public/app.js) ---
+# --- Technology: the Visitor's browser and the client library it runs (public/app.js) ---
+- {type: Assignment, source: node-visitor-browser, target: sys-firebase-js-sdk, label: runs}
+- {type: Association, source: comm-internet, target: node-visitor-browser}
+- {type: Serving, source: int-web-app, target: node-visitor-browser, label: "public/ + init.json over HTTPS"}
 - {type: Serving, source: sys-firebase-js-sdk, target: app-frontend, label: "provides Firestore connectivity"}
-- {type: Association, source: sys-firebase-js-sdk, target: comm-internet}
+- {type: Serving, source: int-firestore-api, target: sys-firebase-js-sdk, label: "query / transaction"}
 
 - type: Access
   source: sys-firebase-js-sdk

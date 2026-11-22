@@ -15,12 +15,14 @@ Technology_Node(e_id05e3b325cf7f50, "Cloud Firestore") {
   Technology_Interface(e_id26e5c2fbfcd056, "Firestore API Interface")
   Technology_SystemSoftware(e_id02ca65d6e67351, "Firestore Database Engine")
 }
+Technology_Node(e_id9f19149e10f45e, "Visitor's Browser") {
+  Technology_SystemSoftware(e_id7844884d61f95e, "Firebase JS SDK (v13)")
+}
 Technology_CommunicationNetwork(e_id454e7b903b8357, "Internet")
 Application_Component(e_id859316e8097157, "Frontend") {
   Application_Process(e_id9e4601a2031c58, "Initialize Demo Data")
   Application_Process(e_idf9a91550500455, "Read Demo Items")
 }
-Technology_SystemSoftware(e_id7844884d61f95e, "Firebase JS SDK (v13)")
 
 Rel_Serving_Up(e_id9871766290fc58, e_id859316e8097157, "serves static files")
 Rel_Realization_Up(e_id07145ad8546555, e_id859316e8097157, "hosts")
@@ -30,8 +32,10 @@ Rel_Association(e_id454e7b903b8357, e_id33cc192ee35e5b, "")
 Rel_Association(e_id454e7b903b8357, e_id26e5c2fbfcd056, "")
 Rel_Access_w(e_id9871766290fc58, e_id114715e81c7e5c, "provisions /__/firebase/init.json")
 Rel_Access_r(e_id02ca65d6e67351, e_idb243cba23e0356, "enforces on every request")
+Rel_Association(e_id454e7b903b8357, e_id9f19149e10f45e, "")
+Rel_Serving_Up(e_id33cc192ee35e5b, e_id9f19149e10f45e, "public/ + init.json over HTTPS")
 Rel_Serving_Up(e_id7844884d61f95e, e_id859316e8097157, "provides Firestore connectivity")
-Rel_Association(e_id7844884d61f95e, e_id454e7b903b8357, "")
+Rel_Serving_Up(e_id26e5c2fbfcd056, e_id7844884d61f95e, "query / transaction")
 Rel_Access_r(e_id7844884d61f95e, e_id114715e81c7e5c, "reads projectId / apiKey")
 
 @enduml
