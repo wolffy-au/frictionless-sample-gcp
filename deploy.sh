@@ -25,7 +25,10 @@ for tool in terraform gcloud; do
   fi
 done
 
-if ! gcloud auth application-default print-access-token > /dev/null 2>&1; then
+# GitHub Actions supplies credentials through GOOGLE_APPLICATION_CREDENTIALS
+# (see .github/workflows/deploy.yml); locally, use gcloud's ADC login.
+if [[ -z "${GOOGLE_APPLICATION_CREDENTIALS:-}" ]] &&
+  ! gcloud auth application-default print-access-token > /dev/null 2>&1; then
   echo "No Application Default Credentials for Terraform. Run:" >&2
   echo "  gcloud auth application-default login" >&2
   exit 1

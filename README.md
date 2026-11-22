@@ -16,6 +16,8 @@ creates the three sample documents if the collection is empty.
 | `firestore.rules` | The access control: public reads, seed-only creates, nothing else |
 | `public/` | Static frontend (`index.html`, `app.js`) |
 | `deploy.sh` | Provisions the infrastructure with Terraform and deploys Hosting |
+| `.github/workflows/deploy.yml` | GitHub Actions: runs `deploy.sh` when a version tag is pushed |
+| `setup-github-deploy.sh` | One-time setup of the keyless sign-in and settings the workflow uses |
 
 ## Azure to GCP mapping
 
@@ -86,6 +88,37 @@ instead of failing. The database location cannot be changed later.
 Terraform keeps its state in `terraform.tfstate` in this directory
 (git-ignored). Keep that file: without it, the next run re-imports the existing
 resources.
+
+## Deploy from GitHub Actions
+
+Pushing a version tag deploys automatically:
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+The workflow (`.github/workflows/deploy.yml`) runs `deploy.sh` with
+`AUTO_APPROVE=1` in the repository's `production` environment. It signs in to
+Google Cloud through Workload Identity Federation, so no key is stored in GitHub.
+
+Set this up once, with `gcloud` and the [GitHub CLI](https://cli.github.com)
+(`gh`) both signed in and `PROJECT_ID` set in `.env`:
+
+```bash
+bash setup-github-deploy.sh
+```
+
+It creates a workload identity pool and provider that trust only this
+repository's `production` environment, and a `github-deploy` service account
+they may impersonate. It grants that account the Service Usage Admin, Cloud
+Datastore Owner and Firebase Admin roles, and stores the settings as variables
+in the `production` environment. It is safe to re-run.
+
+The workflow has no copy of your local `terraform.tfstate`, so each run starts
+from empty state and imports the existing database and rules release, as
+described above. A remote state backend would need a Cloud Storage bucket, which
+needs billing. Each run also publishes a new, identical version of the rules.
 
 ## Run locally
 
